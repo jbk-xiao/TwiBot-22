@@ -13,7 +13,7 @@ def get_data_dir(server_id):
     elif server_id == "208":
         return Path("")
     elif server_id == "209":
-        return Path("../datasets")
+        return Path("../../../../datasets")
     else:
         raise NotImplementedError
 
@@ -71,11 +71,13 @@ def fast_merge(dataset="Twibot-20", server_id="209"):
     for i in tqdm(range(length)):
         if user["id"][i] in id_to_label.keys():
             if i<len(label):
-                user["label"][i] = id_to_label[user["id"][i]]
-                user["split"][i] = id_to_split[user["id"][i]]
+                # user["label"][i] = id_to_label[user["id"][i]]
+                # user["split"][i] = id_to_split[user["id"][i]]
+                user.loc[i, "label"] = id_to_label[user["id"][i]]
+                user.loc[i, "split"] = id_to_split[user["id"][i]]
             else:
-                user["label"][i] = np.nan
-                user["split"][i] = id_to_split[user["id"][i]]
+                user.loc[i, "label"] = np.nan
+                user.loc[i, "split"] = id_to_split[user["id"][i]]
         
     # length = len(split)
     
