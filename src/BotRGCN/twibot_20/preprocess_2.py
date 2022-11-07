@@ -77,8 +77,8 @@ def tweets_embedding():
 
             tweets_list.append(total_each_person_tweets)
 
-        tweet_tensor = torch.stack(tweets_list)
-        torch.save(tweet_tensor, "./processed_data/tweets_tensor.pt")
+        tweets_tensor = torch.stack(tweets_list)
+        torch.save(tweets_tensor, "./processed_data/tweets_tensor.pt")
 
     else:
         tweets_tensor = torch.load(path)
