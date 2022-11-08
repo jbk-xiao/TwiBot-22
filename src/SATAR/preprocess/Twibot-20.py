@@ -164,7 +164,7 @@ def get_tweets():
 
 def get_bot_labels():
     user_idx = json.load(open('tmp/{}/idx.json'.format(dataset)))
-    label_data = pandas.read_csv('../../datasets/{}/label.csv'.format(dataset))
+    label_data = pandas.read_csv('../../../../datasets/{}/label.csv'.format(dataset))
     label_index = {}
     for index, item in tqdm(label_data.iterrows(), ncols=0):
         label_index[item['id']] = int(item['label'] == 'bot')
@@ -214,7 +214,7 @@ def get_follower_labels():
 
 
 if __name__ == '__main__':
-    path = '../../datasets/{}'.format(dataset)
+    path = '../../../../datasets/{}'.format(dataset)
     get_properties()
     get_neighbors()
     get_tweet_corpus()
