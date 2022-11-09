@@ -192,6 +192,6 @@ python eval.py --dataset Twibot-20
 
 
 
-| baseline | acc on Twibot-22 | f1 on Twibot-22 | type  | tags |
-| :------: | :--------------: | :-------------: | :---: | :--: |
-|  SATAR   |        -         |        -        | F T G |      |
+| baseline | acc on Twibot-22 | f1 on Twibot-22 | type  | tags  |
+| :------: | :--------------: | :-------------: | :---: |:-----:|
+|  SATAR   |        -         |        -        | F T G |       |
