@@ -14,7 +14,7 @@ class SATARDataset(Dataset):
         assert type(split) == list
         idx = json.load(open('tmp/{}/idx.json'.format(dataset_name)))
         idx = {item: index for index, item in enumerate(idx)}
-        split_data = pd.read_csv('tmp/{}/split.csv'.format(dataset_name))
+        split_data = pd.read_csv('../../../datasets/{}/split.csv'.format(dataset_name))
         self.idx = []
         for index, item in split_data.iterrows():
             if item['split'] in split:
