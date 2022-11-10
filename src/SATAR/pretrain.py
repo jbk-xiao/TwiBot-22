@@ -112,7 +112,7 @@ def forward_one_epoch(epoch):
     global best_state_dict
     if is_better(val_metrics, best_val_metrics):
         best_val_metrics = val_metrics
-        best_state_dict = model.module.cpu().state_dict()
+        best_state_dict = model.state_dict()
         torch.save(best_state_dict, 'tmp/{}/pretrain_weight.pt'.format(dataset_name))
 
 
@@ -167,11 +167,7 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_set, batch_size=n_batch, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=n_batch, shuffle=False)
 
-    model = SATAR(hidden_dim=n_hidden, embedding_dim=embedding_dim, dropout=dropout)
-    # 多卡测试
-    device_ids = [0, 1, 2, 3]
-    model = nn.DataParallel(model, device_ids=device_ids)
-    model = model.cuda(device=device_ids[1])
+    model = SATAR(hidden_dim=n_hidden, embedding_dim=embedding_dim, dropout=dropout).to(device)
     classifier = FollowersClassifier(in_dim=n_hidden, out_dim=2).to(device)
     optimizer = torch.optim.Adam(set(model.parameters()) |
                                  set(classifier.parameters()),
