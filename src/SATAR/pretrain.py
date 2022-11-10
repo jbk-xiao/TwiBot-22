@@ -9,7 +9,7 @@ from model import SATAR, FollowersClassifier
 from tqdm import tqdm
 from utils import null_metrics, calc_metrics, is_better
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 
 parser = ArgumentParser()
 parser.add_argument('--dataset', type=str)
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     # 多卡测试
     device_ids = [0, 1, 2, 3]
     model = nn.DataParallel(model, device_ids=device_ids)
-    model = model.cuda(device=device_ids[0])
+    model = model.cuda(device=device_ids[1])
     classifier = FollowersClassifier(in_dim=n_hidden, out_dim=2).to(device)
     optimizer = torch.optim.Adam(set(model.parameters()) |
                                  set(classifier.parameters()),
