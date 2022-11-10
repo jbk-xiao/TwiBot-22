@@ -9,7 +9,7 @@ from model import SATAR, FollowersClassifier
 from tqdm import tqdm
 from utils import null_metrics, calc_metrics, is_better
 
-device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 parser = ArgumentParser()
 parser.add_argument('--dataset', type=str)
