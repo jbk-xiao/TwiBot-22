@@ -160,8 +160,6 @@ for each in user['profile_image_url']:
     else:
         default_profile_image.append(int(1))
 
-default_profile_image_tensor = torch.tensor(default_profile_image, dtype=torch.float)
-
 protected = user['protected']
 protected_list = []
 for each in protected:
@@ -177,10 +175,8 @@ for each in verified:
         verified_list.append(1)
     else:
         verified_list.append(0)
-
-cat_properties_tensor = default_profile_image_tensor.reshape(
-    [len(default_profile_image), 1])  # reshape前后维度不同，reshape的目的是行列转置？
-# TODO 可能是此修改导致了分类型属性的全连接层无法正常执行，暂时使用已有预处理数据
+cat_properties = np.transpose([default_profile_image, protected_list, verified_list])
+cat_properties_tensor = torch.tensor(cat_properties, dtype=torch.float)
 torch.save(cat_properties_tensor, path + 'cat_properties_tensor.pt')
 
 # get each_user_tweets
