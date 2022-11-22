@@ -17,7 +17,7 @@ class RGTDetector(pl.LightningModule):
         self.edge_index = torch.load(args.path + "edge_index.pt", map_location="cuda")
         self.edge_type = torch.load(args.path + "edge_type.pt", map_location="cuda")
         self.label = torch.load(args.path + "label.pt", map_location="cuda")
-  
+
         self.lr = args.lr
         self.l2_reg = args.l2_reg
 
@@ -26,14 +26,16 @@ class RGTDetector(pl.LightningModule):
         self.tweet_features = torch.load(args.path + "tweets_tensor.pt", map_location="cuda")
         self.des_features = torch.load(args.path + "des_tensor.pt", map_location="cuda")
 
-        self.in_linear_numeric = nn.Linear(args.numeric_num, int(args.linear_channels/4), bias=True)
-        self.in_linear_bool = nn.Linear(args.cat_num, int(args.linear_channels/4), bias=True)
-        self.in_linear_tweet = nn.Linear(args.tweet_channel, int(args.linear_channels/4), bias=True)
-        self.in_linear_des = nn.Linear(args.des_channel, int(args.linear_channels/4), bias=True)
+        self.in_linear_numeric = nn.Linear(args.numeric_num, int(args.linear_channels / 4), bias=True)
+        self.in_linear_bool = nn.Linear(args.cat_num, int(args.linear_channels / 4), bias=True)
+        self.in_linear_tweet = nn.Linear(args.tweet_channel, int(args.linear_channels / 4), bias=True)
+        self.in_linear_des = nn.Linear(args.des_channel, int(args.linear_channels / 4), bias=True)
         self.linear1 = nn.Linear(args.linear_channels, args.linear_channels)
 
-        self.RGT_layer1 = RGTLayer(num_edge_type=2, in_channel=args.linear_channels, out_channel=args.out_channel, trans_heads=args.trans_head, semantic_head=args.semantic_head, dropout=args.dropout)
-        self.RGT_layer2 = RGTLayer(num_edge_type=2, in_channel=args.linear_channels, out_channel=args.out_channel, trans_heads=args.trans_head, semantic_head=args.semantic_head, dropout=args.dropout)
+        self.RGT_layer1 = RGTLayer(num_edge_type=2, in_channel=args.linear_channels, out_channel=args.out_channel,
+                                   trans_heads=args.trans_head, semantic_head=args.semantic_head, dropout=args.dropout)
+        self.RGT_layer2 = RGTLayer(num_edge_type=2, in_channel=args.linear_channels, out_channel=args.out_channel,
+                                   trans_heads=args.trans_head, semantic_head=args.semantic_head, dropout=args.dropout)
 
         self.out1 = torch.nn.Linear(args.out_channel, 64)
         self.out2 = torch.nn.Linear(64, 2)
@@ -41,7 +43,7 @@ class RGTDetector(pl.LightningModule):
         self.drop = nn.Dropout(args.dropout)
         self.CELoss = nn.CrossEntropyLoss()
         self.ReLU = nn.LeakyReLU()
-        
+
         self.init_weight()
 
     def init_weight(self):
@@ -58,8 +60,9 @@ class RGTDetector(pl.LightningModule):
         user_features_bool = self.drop(self.ReLU(self.in_linear_bool(self.cat_features)))
         user_features_tweet = self.drop(self.ReLU(self.in_linear_tweet(self.tweet_features)))
         user_features_des = self.drop(self.ReLU(self.in_linear_des(self.des_features)))
-        
-        user_features = torch.cat((user_features_numeric,user_features_bool,user_features_tweet,user_features_des), dim = 1)
+
+        user_features = torch.cat((user_features_numeric, user_features_bool, user_features_tweet, user_features_des),
+                                  dim=1)
         user_features = self.drop(self.ReLU(self.linear1(user_features)))
 
         user_features = self.ReLU(self.RGT_layer1(user_features, self.edge_index, self.edge_type))
@@ -70,7 +73,7 @@ class RGTDetector(pl.LightningModule):
         loss = self.CELoss(pred, self.label[train_batch])
 
         return loss
-    
+
     def validation_step(self, val_batch, batch_idx):
         self.eval()
         with torch.no_grad():
@@ -80,8 +83,9 @@ class RGTDetector(pl.LightningModule):
             user_features_bool = self.drop(self.ReLU(self.in_linear_bool(self.cat_features)))
             user_features_tweet = self.drop(self.ReLU(self.in_linear_tweet(self.tweet_features)))
             user_features_des = self.drop(self.ReLU(self.in_linear_des(self.des_features)))
-            
-            user_features = torch.cat((user_features_numeric,user_features_bool,user_features_tweet,user_features_des), dim = 1)
+
+            user_features = torch.cat(
+                (user_features_numeric, user_features_bool, user_features_tweet, user_features_des), dim=1)
             user_features = self.drop(self.ReLU(self.linear1(user_features)))
 
             user_features = self.ReLU(self.RGT_layer1(user_features, self.edge_index, self.edge_type))
@@ -91,17 +95,17 @@ class RGTDetector(pl.LightningModule):
             pred = self.out2(user_features[val_batch])
             # print(pred.size())
             pred_binary = torch.argmax(pred, dim=1)
-            
+
             # print(self.label[val_batch].size())
 
             acc = accuracy_score(self.label[val_batch].cpu(), pred_binary.cpu())
             f1 = f1_score(self.label[val_batch].cpu(), pred_binary.cpu())
-            
+
             self.log("val_acc", acc)
             self.log("val_f1", f1)
 
             print("acc: {} f1: {}".format(acc, f1))
-    
+
     def test_step(self, test_batch, batch_idx):
         self.eval()
         with torch.no_grad():
@@ -110,8 +114,9 @@ class RGTDetector(pl.LightningModule):
             user_features_bool = self.drop(self.ReLU(self.in_linear_bool(self.cat_features)))
             user_features_tweet = self.drop(self.ReLU(self.in_linear_tweet(self.tweet_features)))
             user_features_des = self.drop(self.ReLU(self.in_linear_des(self.des_features)))
-            
-            user_features = torch.cat((user_features_numeric,user_features_bool,user_features_tweet,user_features_des), dim = 1)
+
+            user_features = torch.cat(
+                (user_features_numeric, user_features_bool, user_features_tweet, user_features_des), dim=1)
             user_features = self.drop(self.ReLU(self.linear1(user_features)))
 
             user_features = self.ReLU(self.RGT_layer1(user_features, self.edge_index, self.edge_type))
@@ -119,17 +124,17 @@ class RGTDetector(pl.LightningModule):
 
             user_features = self.drop(self.ReLU(self.out1(user_features)))
             pred = self.out2(user_features[test_batch])
-            
+
             pred_binary = torch.argmax(pred, dim=1)
 
             acc = accuracy_score(self.label[test_batch].cpu(), pred_binary.cpu())
             f1 = f1_score(self.label[test_batch].cpu(), pred_binary.cpu())
-            precision =precision_score(self.label[test_batch].cpu(), pred_binary.cpu())
+            precision = precision_score(self.label[test_batch].cpu(), pred_binary.cpu())
             recall = recall_score(self.label[test_batch].cpu(), pred_binary.cpu())
-            auc = roc_auc_score(self.label[test_batch].cpu(), pred[:,1].cpu())
+            auc = roc_auc_score(self.label[test_batch].cpu(), pred[:, 1].cpu())
 
             self.log("acc", acc)
-            self.log("f1",f1)
+            self.log("f1", f1)
             self.log("precision", precision)
             self.log("recall", recall)
             self.log("auc", auc)
@@ -147,7 +152,8 @@ class RGTDetector(pl.LightningModule):
         }
 
 
-parser = argparse.ArgumentParser(description="Reproduction of Heterogeneity-aware Bot detection with Relational Graph Transformers")
+parser = argparse.ArgumentParser(
+    description="Reproduction of Heterogeneity-aware Bot detection with Relational Graph Transformers")
 parser.add_argument("--path", type=str, default="./", help="dataset path")
 parser.add_argument("--numeric_num", type=int, default=5, help="dataset path")
 parser.add_argument("--linear_channels", type=int, default=128, help="linear channels")
@@ -170,7 +176,7 @@ if __name__ == "__main__":
 
     if args.random_seed != None:
         pl.seed_everything(args.random_seed)
-        
+
     checkpoint_callback = ModelCheckpoint(
         monitor='val_acc',
         mode='max',
@@ -187,8 +193,9 @@ if __name__ == "__main__":
     test_loader = DataLoader(test_dataset, batch_size=1)
 
     model = RGTDetector(args)
-    trainer = pl.Trainer(gpus=1, num_nodes=1, max_epochs=args.epochs, precision=16, log_every_n_steps=1, callbacks=[checkpoint_callback])
-    
+    trainer = pl.Trainer(gpus=1, num_nodes=1, max_epochs=args.epochs, precision=16, log_every_n_steps=1,
+                         callbacks=[checkpoint_callback])
+
     trainer.fit(model, train_loader, valid_loader)
 
     dir = './lightning_logs/version_{}/checkpoints/'.format(trainer.logger.version)
