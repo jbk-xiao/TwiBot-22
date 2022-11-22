@@ -3,7 +3,7 @@ from torch import nn
 from torch_geometric.nn import RGCNConv, FastRGCNConv, GCNConv, GATConv
 import torch.nn.functional as F
 
-
+nn.functional.softmax()
 class BotRGCN(nn.Module):
     def __init__(self, des_size=768, tweet_size=768, num_prop_size=5, cat_prop_size=3, embedding_dimension=128,
                  dropout=0.3):
@@ -57,7 +57,7 @@ class BotRGCN(nn.Module):
 
 
 class BotRGCN1(nn.Module):
-    def __init__(self, des_size=768, tweet_size=768, num_prop_size=6, cat_prop_size=11, embedding_dimension=128,
+    def __init__(self, des_size=768, tweet_size=768, num_prop_size=5, cat_prop_size=11, embedding_dimension=128,
                  dropout=0.3):
         super(BotRGCN1, self).__init__()
         self.dropout = dropout
@@ -111,7 +111,7 @@ class BotRGCN1(nn.Module):
 
 
 class BotRGCN2(nn.Module):
-    def __init__(self, des_size=768, tweet_size=768, num_prop_size=6, cat_prop_size=11, embedding_dimension=128,
+    def __init__(self, des_size=768, tweet_size=768, num_prop_size=5, cat_prop_size=11, embedding_dimension=128,
                  dropout=0.3):
         super(BotRGCN2, self).__init__()
         self.dropout = dropout
@@ -169,7 +169,7 @@ class BotRGCN2(nn.Module):
 
 
 class BotRGCN3(nn.Module):
-    def __init__(self, des_size=768, tweet_size=768, num_prop_size=6, cat_prop_size=11, embedding_dimension=128,
+    def __init__(self, des_size=768, tweet_size=768, num_prop_size=5, cat_prop_size=11, embedding_dimension=128,
                  dropout=0.3):
         super(BotRGCN3, self).__init__()
         self.dropout = dropout
@@ -228,7 +228,7 @@ class BotRGCN3(nn.Module):
 
 
 class BotRGCN4(nn.Module):
-    def __init__(self, des_size=768, tweet_size=768, num_prop_size=6, cat_prop_size=11, embedding_dimension=128,
+    def __init__(self, des_size=768, tweet_size=768, num_prop_size=5, cat_prop_size=11, embedding_dimension=128,
                  dropout=0.3):
         super(BotRGCN4, self).__init__()
         self.dropout = dropout
@@ -283,7 +283,7 @@ class BotRGCN4(nn.Module):
 
 
 class BotRGCN12(nn.Module):
-    def __init__(self, des_size=768, tweet_size=768, num_prop_size=6, cat_prop_size=11, embedding_dimension=128,
+    def __init__(self, des_size=768, tweet_size=768, num_prop_size=5, cat_prop_size=11, embedding_dimension=128,
                  dropout=0.3):
         super(BotRGCN12, self).__init__()
         self.dropout = dropout
